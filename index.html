@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>OnlineBallAtack</title>
+  <script type="text/javascript" src="./scripts/jquery-1.7.1.min.js"></script> 
+   <script type="text/javascript" src="./scripts/json2.js"></script>
+   <!--[if IE]><script type="text/javascript" src="./scripts/excanvas.compiled.js"></script><![endif]-->
+   <script type="text/javascript" src="./src/util/myUtils.js"></script>
+   <script type="text/javascript" src="./src/client/ballAtack.js"></script>
+   <script type="text/javascript" src="http://<% ServerAdress %>:<% ServerHttpPort %>/socket.io/lib/socket.io.js"></script>
+   <script type="text/javascript" src="./src/util/rigidUtil.js"></script>
+   <script type="text/javascript" src="./src/client/client.js"></script>
+</head>
+<body style="margin:0";>
+   <canvas id="GameCanvas"></canvas>
+   <input type="text" id="JoinName" style="position:absolute; top:92%;left:0; width:25%; height:5%;" hidden>
+   <button id="JoinButton" style="position:absolute; top:92%;left:25%; width:25%; height:5%;" hidden>Start</button>
+   <input type="text" id="ChatText" style="position:absolute; top:92%;left:50%; width:25%; height:5%;" hidden>
+   <button id="ChatButton" style="position:absolute; top:92%;left:75%; width:25%; height:5%;" hidden>Send Message</button>
+</body>
+</html>
