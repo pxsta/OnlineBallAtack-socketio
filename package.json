@@ -1,10 +1,12 @@
 {
     "name": "OnlineBallAtack"
-  , "version": "0.0.1"
+  , "version": "0.0.2"
   , "private": true
   , "dependencies": {
-      "socket.io": ">= 0.8.7"
-    , "express": ">= 2.5.1"
-    , "connect": ">= 1.8.2"
+      "socket.io": "0.9.10"
+    , "connect": "2.4.3"
+	,"express": "3.0.0rc3"
+	,"cookie" : "0.0.4"
+    ,"ejs": "*"
   }
 }

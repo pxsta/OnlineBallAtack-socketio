@@ -23,7 +23,7 @@ var ServerBallClass = function(my){
     var collidContinueCount=0;
 
     
-    my.expressSessionID = my.expressSessionID||0;
+    my.expressSessionID = my.expressSessionID||'0';
     my.mode=my.mode||defaultMode;
     my.previousPosition={x:0,y:0};
     

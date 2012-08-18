@@ -21,22 +21,25 @@ var MyApp={ config:{ServerHttpPort:8080
 
 //chachされなかった例外の処理
 process.on('uncaughtException', function (err) {
-    console.log('uncaughtException:'+err);
+    console.log('uncaughtException');
+    conseole.dir(err);
 });
 
 
 var fs = require('fs');
 var path = require('path');
 var express = require('express')
-var app = module.exports = express.createServer();
+
+var app=express();
 var MemoryStore = express.session.MemoryStore;
 var sessionStore = new MemoryStore();
 
 app.configure(function(){
-    app.use(express.cookieParser());
-    app.use(express.session({ secret: 'pxsta'
+    app.use(express.cookieParser("pxsta"));
+    app.use(express.session({ secret: "pxsta"
                              ,store: sessionStore}
     ));
+
 });
 app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
@@ -47,8 +50,8 @@ app.configure('production', function(){
 });
 
 var writeResData = function(req,res,currentPath){
-    var extention = path.extname(currentPath);
     console.log(currentPath);
+    var extention = path.extname(currentPath);
     fs.readFile(__dirname + currentPath, function(err, data){
         if (err) {
             console.dir(err);
@@ -89,15 +92,14 @@ app.get('/src/client/*.js', function(req, res) {
 app.get('*', function(req, res){
     res.send('Not found', 404);
 });
-app.listen(MyApp.config.ServerHttpPort);
 
-
-var io = require('socket.io').listen(app);
+var http = require('http').createServer(app).listen(MyApp.config.ServerHttpPort);
+var io = require('socket.io').listen(http);
 io.set('log level', 1);
 
 var connect = require('connect');
 var Session = connect.middleware.session.Session;
-var parseCookie = require('connect').utils.parseCookie;
+var parseCookie = require('cookie').parse;
 io.set('authorization', function (handshakeData, callback) {
     if(handshakeData.headers.cookie) {
         //cookieを取得
@@ -133,7 +135,6 @@ io.sockets.on('connection', function (connection) {
                             ,position:{x:150*(Math.random()*6-3),y:150*(Math.random()*6-3)}
                             ,playerName:data.playerName};
         
-
         //既にexpressSessionIDが登録済みの時はsocket.ioのsocketIDだけ更新する
         if(MyApp.ballList.hasBallByExpressSessionID(expSID)){
             MyApp.ballList.getByExpressSessionID(expSID).setSocketID(connection.id);
@@ -178,7 +179,7 @@ io.sockets.on('connection', function (connection) {
         moveVector.x*=acRatio;
         moveVector.y*=acRatio;
         if(!MyApp.ballList.hasBall(connection.id)){
-            console.log("error updateBallSpeed:ballList has not socketID");
+            console.log("error updateBallSpeed:ballList has not socketID: "+connection.id);
             return;
         }
         
@@ -260,8 +261,8 @@ var update = function()
 
     //CPUを追加する
     if(ballArray.length<3){
-        var expSID =-Math.random();
-        var SID =-Math.random();
+        var expSID =-Math.random().toString();
+        var SID =-Math.random().toString();
         console.log("addCPUBall:"+expSID);
         
         var newUserOption = {expressSessionID:expSID
@@ -291,7 +292,7 @@ var sync = function(){
     for(var i=0;i<ballArray.length;i++){
         //CUPはコネクションが無いので送らない
         var socketID = ballArray[i].getSocketID();
-        if(socketID>0){
+        if(socketID[0]!="-"){
             io.sockets.socket(socketID).volatile.emit("updateBallInfo",JSON.stringify(sendMessage));
         }
     }
